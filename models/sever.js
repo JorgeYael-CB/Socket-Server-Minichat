@@ -2,7 +2,8 @@
 const express = require('express')
 const http = require('http')
 const io = require('socket.io')
-const path = require('path')
+const path = require('path');
+const Sockets = require('./sockets');
 
 
 class Server {
@@ -19,6 +20,14 @@ class Server {
 
     //Iniciar config de express
     this.config()
+
+    //Inicializar sockets
+    this.configSocket();
+  }
+
+
+  configSocket(){
+    new Sockets( this.io );
   }
 
 
