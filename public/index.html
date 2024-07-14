@@ -4,26 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
-<body>
+<body class="container">
 
-    <h1>Mini chat</h1>
+    <h1 class="mt-5">Mini chat</h1>
+    <hr>
+
+
+    <form id="mi-formulario">
+        <div class="row">
+            <div class="col-8">
+
+                <input type="text" id="mensaje" placeholder="mensaje" class="form-control">
+            </div>
+            <div class="col-4">
+                <button class="btn btn-primary">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row mt-5">
+        <div class="col">
+            <ul id="mis-mensajes">
+            </ul>
+        </div>
+    </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+        const form = document.querySelector('#mi-formulario')
         const socket = io('http://localhost:3000')
+        const mensajes = document.querySelector('#mis-mensajes')
+        const mensajeInput = document.querySelector('#mensaje');
 
-        socket.on('mensaje-bienvenida', ( data ) => {
-            console.log(`El servidor emitio algo...`)
-            console.log( data );
+        let message = '';
+
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+
+            socket.emit('message-to-server', {
+                msg: message,
+            })
         })
 
-        setTimeout( () => {
-            socket.emit('mensaje-client', {
-                msg: 'Hola, este es el cliente :D',
-                name: 'Jorge Yael'
-            })
-        }, 3000)
+        mensajeInput.addEventListener('change' , e => {
+            message = e.target.value.trim()
+        })
+
+        socket.on('message-from-server', (data) => {
+            mensajes.innerHTML += `
+                <li>${data.msg}</li>
+            `
+        })
+
+
+        //socket.on('mensaje-bienvenida', ( data ) => {
+        //    console.log(`El servidor emitio algo...`)
+        //    console.log( data );
+        //})
+
+        //setTimeout( () => {
+        //    socket.emit('mensaje-client', {
+        //        msg: 'Hola, este es el cliente :D',
+        //        name: 'Jorge Yael'
+        //    })
+        //}, 3000)
     </script>
 </body>
 </html>
