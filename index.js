@@ -12,8 +12,20 @@ const io = require('socket.io')(server);
 app.use( express.static( __dirname + '/public' ) )
 
 
-io.on('connection', () => {
-  console.log(`Nuevo cliente conectado!`);
+io.on('connection', ( socket ) => {
+  // console.log(`Nuevo cliente conectado!`);
+  // console.log(socket.id);
+
+  socket.emit('mensaje-bienvenida', {
+    msg: 'Bienvenido al server',
+    fecha: new Date(),
+  });
+
+  socket.on('mensaje-client', ( data ) => {
+    console.log('El cliente emitio al servidor!')
+    console.log(data);
+  });
+
 });
 
 
